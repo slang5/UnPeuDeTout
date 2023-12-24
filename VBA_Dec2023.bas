@@ -43,12 +43,13 @@ Sub Ticket()
         MsgBox "Les erreurs sont les suivantes : " + vbCrLf + erreur(0) + vbCrLf + erreur(1), 0, ["Liste des erreurs"]
         Exit Sub
     End If
-
-    Worksheets("Exercice_2").Cells(5, 9).Value = 0
-    Worksheets("Exercice_2").Cells(14, 5).Value = 0
-    Worksheets("Exercice_2").Cells(6, 9).Value = 0
-    Worksheets("Exercice_2").Cells(9, 9).Value = 0
-    Worksheets("Exercice_2").Cells(15, 8).Value = 0
+    With Worksheets("Exercice_2")
+        .Cells(5, 9).Value = 0
+        .Cells(14, 5).Value = 0
+        .Cells(6, 9).Value = 0
+        .Cells(9, 9).Value = 0
+        .Cells(15, 8).Value = 0
+    end With
 
     Dim villes(0 To 7) As String 'ici on a une matrice de taille 8
     Dim Index As Integer
@@ -105,16 +106,17 @@ Sub Ticket()
     matricereduction(1) = matricereduction(0) * prix
     matriceTVA(1) = matriceTVA(0) * prix
     Dim prixtotal As Double: prixtotal = prix - matricereduction(1) + matriceTVA(1)
-    
-    Worksheets("Exercice_2").Cells(5, 9).Value = prix
-    Worksheets("Exercice_2").Cells(14, 5).Value = (matricereduction(0))
-    Worksheets("Exercice_2").Cells(6, 9).Value = matricereduction(1)
-    Worksheets("Exercice_2").Cells(9, 9).Value = matriceTVA(1)
-    Worksheets("Exercice_2").Cells(15, 8).Value = prixtotal
-    
-    a = Worksheets("Exercice_2").Cells(5, 2).Value
-    b = Worksheets("Exercice_2").Cells(6, 2).Value
-    c = Worksheets("Exercice_2").Cells(17, 2).Value
+    With Worksheets("Exercice_2")
+        .Cells(5, 9).Value = prix
+        .Cells(14, 5).Value = (matricereduction(0))
+        .Cells(6, 9).Value = matricereduction(1)
+        .Cells(9, 9).Value = matriceTVA(1)
+        .Cells(15, 8).Value = prixtotal
+        a = .Cells(5, 2).Value
+        b = .Cells(6, 2).Value
+        c = .Cells(17, 2).Value
+    end with
+
     D = datevoyage
     e = prixtotal
     f = matricereduction(0)
