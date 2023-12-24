@@ -1,3 +1,28 @@
+Sub Reporting(Dep, Arr, DateCom, DateVoy, Pri, Red, Tva)
+
+    Worksheets("Historique des billets").Rows(2).Insert (1)
+
+    Dim MatriceDate(0 To 1) As Variant
+    MatriceDate(0) = DateCom
+    MatriceDate(1) = DateVoy
+
+    With Worksheets("Historique des billets").Rows(2)
+    .Columns(1).Value = Dep
+    .Columns(2).Value = Arr
+    .Columns(11).Value = Pri
+    .Columns(12).Value = Red
+    .Columns(13).Value = Tva
+
+    For i = 0 To 1:
+    .Columns(3 + 4 * i).Value = MatriceDate(i)
+    .Columns(4 + 4 * i).Value = Day(MatriceDate(i))
+    .Columns(5 + 4 * i).Value = Month(MatriceDate(i))
+    .Columns(6 + 4 * i).Value = Year(MatriceDate(i))
+    Next i
+        
+    End With
+End Sub
+
 Sub Ticket()
 
     Dim erreur(0 To 1) As String: erreur(0) = "": erreur(1) = ""
@@ -36,6 +61,7 @@ Sub Ticket()
         voyage(Index) = Worksheets("Exercice_2").Cells(5 + Index, 2).Value
     Next Index
     
+
     Dim voyageLigneColonne(0 To 1) As Integer
     For Index = 0 To 1
         For i = 0 To 7
@@ -49,24 +75,30 @@ Sub Ticket()
     distance = Worksheets("Paramètres").Cells(4 + voyageLigneColonne(0), 2 + voyageLigneColonne(1)).Value
     Worksheets("Exercice_2").Cells(7, 2).Value = distance
 
+
     Dim prix As Double
     prix = distance * Worksheets("Paramètres").Cells(16 + voyageLigneColonne(0), 2 + voyageLigneColonne(1)).Value
     
-    Dim matricedate(0 To 2, 0 To 3) As Date
+    
+
+    Dim MatriceDate(0 To 2, 0 To 3) As Date
     For i = 0 To 3
         For j = 0 To 2
-            matricedate(j, i) = Worksheets("Paramètres").Cells(5 + j, 11 + i).Value
+            MatriceDate(j, i) = Worksheets("Paramètres").Cells(5 + j, 11 + i).Value
         Next j
     Next i
     
+
     Dim datevoyage As Date: datevoyage = Worksheets("Exercice_2").Cells(14, 2).Value
     
+
+
     Dim matricereduction(0 To 1) As Double: matricereduction(0) = 0
     Dim matriceTVA(0 To 1) As Double: matriceTVA(0) = 0
     For i = 0 To 2
-        If ((matricedate(i, 0)) <= (datevoyage)) And ((datevoyage) <= (matricedate(i, 1))) Then
-            matricereduction(0) = matricedate(i, 2)
-            matriceTVA(0) = matricedate(i, 3)
+        If ((MatriceDate(i, 0)) <= (datevoyage)) And ((datevoyage) <= (MatriceDate(i, 1))) Then
+            matricereduction(0) = MatriceDate(i, 2)
+            matriceTVA(0) = MatriceDate(i, 3)
         End If
     Next i
     
@@ -79,4 +111,72 @@ Sub Ticket()
     Worksheets("Exercice_2").Cells(6, 9).Value = matricereduction(1)
     Worksheets("Exercice_2").Cells(9, 9).Value = matriceTVA(1)
     Worksheets("Exercice_2").Cells(15, 8).Value = prixtotal
+    
+    a = Worksheets("Exercice_2").Cells(5, 2).Value
+    b = Worksheets("Exercice_2").Cells(6, 2).Value
+    c = Worksheets("Exercice_2").Cells(17, 2).Value
+    D = datevoyage
+    e = prixtotal
+    f = matricereduction(0)
+    g = matriceTVA(0)
+    
+    Reporting a, b, c, D, e, f, g
+    
+End Sub
+
+Sub ClearHistorique()
+
+    Dim Ligne As Integer: Ligne = 1
+    Dim Binaire As Boolean: Binaire = False
+
+    While Binaire = False
+        If Worksheets("Historique des billets").Cells(Ligne, 1).Value <> 0 Then
+            Ligne = Ligne + 1
+   
+        Else
+        Binaire = True
+        End If
+     
+    Wend
+
+    Ligne = Ligne - 1
+    If Ligne <= 1 Then
+        Exit Sub
+    Else 
+    Worksheets("Historique des billets").Range(Cells(2, 1), Cells(Ligne, 13)).Clear
+    End If
+
+End Sub
+
+
+Sub VBA_Presentation()
+    
+    Const msoTrue = -1
+    Const ppWindowMaximized = 2
+    
+    Dim PApplication As Object
+    Dim PPT As Object
+    Dim PPTSlide As Object
+    Dim PPTCharts As Excel.ChartObject
+
+
+    Set PApplication = CreateObject("PowerPoint.Application")
+    PApplication.Visible = msoTrue
+    PApplication.WindowState = ppWindowMaximized
+
+    Set PPT = PApplication.Presentations.Add
+
+    For Each PPTCharts In Worksheets("Slide2PPT").ChartObjects
+
+        Set PPTSlide = PPT.Slides.Add(PPT.Slides.Count + 1, 12)
+
+        PPTCharts.Chart.ChartArea.Copy
+        PPTSlide.Shapes.PasteSpecial(DataType:=0).Select
+
+    Next PPTCharts
+    
+    Set PPTSlide = Nothing
+    Set PPT = Nothing
+    Set PApplication = Nothing
+
 End Sub
