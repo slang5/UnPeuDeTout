@@ -90,3 +90,26 @@ Function FRENGeasy(binaire As Integer, textFR As String, textEN As String)
     End If
        
 End Function
+
+
+Private Sub Autocompletion(ByVal Target As Range)
+    ' Define the specific cell you want to monitor
+    Dim MonitoredCell As Range
+    Set MonitoredCell = Me.Range("G2")
+    
+    ' Check if the changed cell is the one we're monitoring
+    If Not Application.Intersect(MonitoredCell, Target) Is Nothing Then
+        ' Disable events to prevent infinite loops when changing cells
+        Application.EnableEvents = False
+        
+        ' Perform the XLookup and update G3
+        Me.Range("G3").Value = Application.WorksheetFunction.XLookup(Me.Range("G2").Value, _
+                                                                      Me.Range("A2:A23"), _
+                                                                      Me.Range("B2:B23"), _
+                                                                      "_RIEN_", _
+                                                                      0, _
+                                                                      1)
+        ' Re-enable events after the operation
+        Application.EnableEvents = True
+    End If
+End Sub
