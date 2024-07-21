@@ -113,3 +113,30 @@ Private Sub Autocompletion(ByVal Target As Range)
         Application.EnableEvents = True
     End If
 End Sub
+
+
+
+Private Sub Worksheet_Change(ByVal Target As Range)
+    Dim duree As Double
+
+    ' Check if the changed cell is within the monitored ranges
+    If Not Intersect(Target, Me.Range("A7:B7")) Is Nothing Or Not Intersect(Target, Me.Range("B3")) Is Nothing Then
+        
+        ' Calculate the duration
+        duree = (Me.Cells(7, 2).Value - Me.Cells(7, 1).Value) * 90 / 100
+        
+        ' Check for negative duration
+        If duree < 0 Then
+            MsgBox "Periode du graphe negative"
+            Exit Sub
+        ElseIf duree <= ActiveSheet.Cells(3, 2).Value * 30 Then
+            ' Set the cell color to red
+            ActiveSheet.Cells(7, 1).Interior.Color = RGB(255, 0, 0)
+            ActiveSheet.Cells(7, 2).Interior.Color = RGB(255, 0, 0)
+        Else
+            ' Reset the cell color if the condition is not met
+            ActiveSheet.Cells(7, 1).Interior.Color = RGB(255, 255, 0)
+            ActiveSheet.Cells(7, 2).Interior.Color = RGB(255, 255, 0)
+        End If
+    End If
+End Sub
