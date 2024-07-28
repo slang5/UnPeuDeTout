@@ -140,3 +140,32 @@ Private Sub Worksheet_Change(ByVal Target As Range)
         End If
     End If
 End Sub
+
+
+Function Unique(Colonne As Range) As Variant
+    Dim iter As Integer
+    Dim dict As Object
+    Dim cellule As Range
+    Dim cellValue As Variant
+    
+    Set dict = CreateObject("Scripting.Dictionary")
+    
+    For Each cellule In Colonne
+        cellValue = (cellule.Value)
+        If Not dict.exists(cellValue) Then
+            dict.Add cellValue, Nothing
+        End If
+    Next cellule
+    
+    Dim Unique() As Variant
+    ReDim Unique(1 To dict.count)
+    
+    iter = 1
+    For Each cellValue In dict.Keys
+        Unique(iter) = cellValue
+        iter = iter + 1
+    Next cellValue
+    
+    Unique = WorksheetFunction.Transpose(Unique)
+    
+End Function
