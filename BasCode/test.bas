@@ -169,3 +169,44 @@ Function Unique(Colonne As Range) As Variant
     Unique = WorksheetFunction.Transpose(Unique)
     
 End Function
+
+
+
+
+Option Explicit
+
+Sub SavingMailAndSendIt()
+    Dim wb As New Workbook
+    Dim ws As Worksheet
+    Dim Path As String
+    Dim outapp As Object
+    Dim outmail As Object
+    
+    Path = "C:\Users\luang\OneDrive\Bureau\Stage Luxembourg\Sur place\VBA export and mail\"
+    Set ws = ActiveSheet
+    Set wb = Workbooks.Add
+    
+    ws.Move wb.Sheets(1)
+    wb.Sheets(2).Delete
+    
+    wb.SaveAs Path & "name" & ".xlsx", FileFormat:=51
+    
+    
+    Set outapp = CreateObject("Outlook.Application")
+    Set outmail = outapp.CreateItem(0)
+
+    With outmail
+        .To = "test@test.com"
+        .CC = ""
+        .BCC = ""
+        .Subject = "Excel"
+        .Body = "Vos positions."
+        .Attachments.Add wb.FullName
+        .Display
+    End With
+    wb.Close True
+    Set outmail = Nothing
+    Set outapp = Nothing
+    
+    
+End Sub
