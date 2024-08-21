@@ -182,7 +182,7 @@ Sub SavingMailAndSendIt()
     Dim outapp As Object
     Dim outmail As Object
     
-    Path = "C:\Users\luang\OneDrive\Bureau\Stage Luxembourg\Sur place\VBA export and mail\"
+    Path = "Path"
     Set ws = ActiveSheet
     Set wb = Workbooks.Add
     
@@ -200,7 +200,7 @@ Sub SavingMailAndSendIt()
         .CC = ""
         .BCC = ""
         .Subject = "Excel"
-        .Body = "Vos positions."
+        .Body = "corps."
         .Attachments.Add wb.FullName
         .Display
     End With
